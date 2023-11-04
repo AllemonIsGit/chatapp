@@ -3,7 +3,7 @@ package com.example.chatapp.service;
 import com.example.chatapp.domain.exception.UserDoesNotExists;
 import com.example.chatapp.domain.exception.UsernameAlreadyExistsException;
 import com.example.chatapp.domain.mapper.UserMapper;
-import com.example.chatapp.domain.model.RegisterDto;
+import com.example.chatapp.domain.model.CreateUserRequest;
 import com.example.chatapp.domain.model.User;
 import com.example.chatapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class DefaultUserService implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public User create(RegisterDto request) {
+    public User create(CreateUserRequest request) {
         if (existsByUsername(request.getUsername())) {
             throw new UsernameAlreadyExistsException("This username is taken.");
         }
