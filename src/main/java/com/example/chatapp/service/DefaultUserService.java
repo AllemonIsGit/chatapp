@@ -1,12 +1,11 @@
 package com.example.chatapp.service;
 
-import com.example.chatapp.domain.exception.UserDoesNotExists;
-import com.example.chatapp.domain.exception.UsernameAlreadyExistsException;
-import com.example.chatapp.domain.mapper.UserMapper;
-import com.example.chatapp.domain.model.CreateUserRequest;
+import com.example.chatapp.domain.exception.UserDoesNotExistsException;
 import com.example.chatapp.domain.model.User;
 import com.example.chatapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,21 +14,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DefaultUserService implements UserService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-
-    @Override
-    public User create(CreateUserRequest request) {
-        if (existsByUsername(request.getUsername())) {
-            throw new UsernameAlreadyExistsException("This username is taken.");
-        }
-
-        return userRepository.save(userMapper.mapToUser(request));
-    }
 
     @Override
     public User update(User user) {
         if (!existsByUsername(user.getUsername())) {
-            throw new UserDoesNotExists("User doesn't exists.");
+            throw new UserDoesNotExistsException("User doesn't exists.");
         }
         return userRepository.save(user);
     }
@@ -39,11 +28,15 @@ public class DefaultUserService implements UserService {
         return userRepository.findById(id);
     }
 
-    public Optional<User> getByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException("Username not found in database.")
+        );
     }
 }

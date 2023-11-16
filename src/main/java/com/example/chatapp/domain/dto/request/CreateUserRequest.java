@@ -1,4 +1,4 @@
-package com.example.chatapp.domain.model;
+package com.example.chatapp.domain.dto.request;
 
 import lombok.Data;
 
