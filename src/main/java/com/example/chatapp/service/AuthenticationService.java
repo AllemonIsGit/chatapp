@@ -3,6 +3,7 @@ package com.example.chatapp.service;
 import com.example.chatapp.domain.dto.request.CreateUserRequest;
 import com.example.chatapp.domain.dto.request.LoginRequest;
 import com.example.chatapp.domain.dto.response.AuthenticationResponse;
+import com.example.chatapp.domain.exception.PasswordDoNotMatchException;
 import com.example.chatapp.domain.model.User;
 import com.example.chatapp.repository.UserRepository;
 import com.example.chatapp.token.JwtUtil;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -32,6 +34,10 @@ public class AuthenticationService {
 
     //TODO check if valid, might return token even if register failed
     public AuthenticationResponse register(CreateUserRequest request) {
+        if (!checkPasswordMatch(request.getPassword(), request.getRePassword())) {
+            throw new PasswordDoNotMatchException("Password do not match.");
+        }
+
         User user = User.builder()
                 .username(request.getUsername())
                 .nickname(request.getNickname())
@@ -41,5 +47,9 @@ public class AuthenticationService {
         userRepository.save(user);
         var jwtToken = jwtUtil.createToken(user.getUsername());
         return AuthenticationResponse.builder().token(jwtToken).build();
+    }
+
+    private boolean checkPasswordMatch(String password, String rePassword) {
+        return Objects.equals(password, rePassword);
     }
 }
