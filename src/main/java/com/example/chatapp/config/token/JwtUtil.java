@@ -1,4 +1,4 @@
-package com.example.chatapp.token;
+package com.example.chatapp.config.token;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Objects;
@@ -23,7 +24,7 @@ public class JwtUtil {
                 .withSubject(username)
                 .withIssuedAt(Date.from(Instant.now()))
                 .withIssuer("AppChat")
-                .withExpiresAt(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)))
+                .withExpiresAt(Date.from(Instant.now().plus(1, ChronoUnit.SECONDS)))
                 .sign(algorithm);
     }
 
@@ -32,7 +33,6 @@ public class JwtUtil {
     }
 
 
-    //TODO also check date
     public boolean isTokenValid(String token, String username) {
         return Objects.equals(verifier.verify(token).getSubject(), username);
     }

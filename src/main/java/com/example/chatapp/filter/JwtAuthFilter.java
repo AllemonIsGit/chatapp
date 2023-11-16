@@ -1,7 +1,7 @@
 package com.example.chatapp.filter;
 
 import com.example.chatapp.service.UserService;
-import com.example.chatapp.token.JwtUtil;
+import com.example.chatapp.config.token.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

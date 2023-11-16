@@ -6,7 +6,7 @@ import com.example.chatapp.domain.dto.response.AuthenticationResponse;
 import com.example.chatapp.domain.exception.PasswordDoNotMatchException;
 import com.example.chatapp.domain.model.User;
 import com.example.chatapp.repository.UserRepository;
-import com.example.chatapp.token.JwtUtil;
+import com.example.chatapp.config.token.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +32,6 @@ public class AuthenticationService {
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
-    //TODO check if valid, might return token even if register failed
     public AuthenticationResponse register(CreateUserRequest request) {
         if (!checkPasswordMatch(request.getPassword(), request.getRePassword())) {
             throw new PasswordDoNotMatchException("Password do not match.");
